@@ -1,0 +1,38 @@
+export const clothes = [
+  {
+    clothe_aid: 1,
+    clothe_title: "White Jacket",
+    clothe_price: "$35.00",
+    clothe_size: "S, SM, L, LG",
+    clothe_image: "winter-1.jpg",
+    clothe_category: "Jacket",
+    clothe_is_active: true,
+  },
+  {
+    clothe_aid: 2,
+    clothe_title: "Creators Club Lounge Tee Forest",
+    clothe_price: "$50.00",
+    clothe_size: "S, SM, L, LG",
+    clothe_image: "shirt-1.jpg",
+    clothe_category: "Shirt",
+    clothe_is_active: true,
+  },
+  {
+    clothe_aid: 3,
+    clothe_title: "Box Hood Black",
+    clothe_price: "$55.00",
+    clothe_size: "S, SM, L, LG, XL, XXL",
+    clothe_image: "jacket-2.jpg",
+    clothe_category: "Jacket",
+    clothe_is_active: true,
+  },
+  {
+    clothe_aid: 4,
+    clothe_title: "Stitched Football Trackpant Oat",
+    clothe_price: "$75.00",
+    clothe_size: "29, 30, 32, 34, 34, 38",
+    clothe_image: "pants-1.jpg",
+    clothe_category: "Pants",
+    clothe_is_active: true,
+  },
+];
