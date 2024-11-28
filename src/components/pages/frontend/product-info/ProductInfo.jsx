@@ -36,11 +36,13 @@ const ProductInfo = () => {
                 <h3>{getProductInfo[0].title}</h3>
                 <div className="flex gap-5 items-center">
                   <ul className="flex gap-1 my-2">
-                    {/* {forEach(let, i=0, i < getProductInfo[0].rating, i++ ){
-                    }} */}
-                    <li>
-                        <Star fill="black" size={16} />
-                      </li>
+                    {Array.from(Array(getProductInfo[0].rating).keys()).map(
+                      () => (
+                        <li>
+                          <Star fill={"black"} size={16} />
+                        </li>
+                      )
+                    )}
                   </ul>
                   <p className="mb-0">reviews(100)</p>
                 </div>
@@ -62,9 +64,12 @@ const ProductInfo = () => {
                 <h5 className="text-sm font-semibold mb-2">Select Your Size</h5>
                 <ul className="sizes flex gap-2">
                   {getProductInfo[0].sizes.map((item, key) => (
-                  <li className="w-[50px] h-[30px] border border-black center-all hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer" key={key}>
-                    {item}
-                  </li>
+                    <li
+                      className="w-[50px] h-[30px] border border-black center-all hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer"
+                      key={key}
+                    >
+                      {item}
+                    </li>
                   ))}
                 </ul>
               </div>

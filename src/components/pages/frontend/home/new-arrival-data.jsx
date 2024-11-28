@@ -14,7 +14,7 @@ export const newArrivalArray = [
       "winter-4.jpg",
     ],
     sizes: [32, 34, 36, 38, 40],
-    rating: 5,
+    rating: 3,
   },
   {
     img1: "na-card-a2.jpg",
