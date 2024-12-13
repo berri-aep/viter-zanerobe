@@ -1,0 +1,33 @@
+RewriteEngine On
+# use for authentication
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+Header set Access-Control-Allow-Origin *
+
+#################################### ALL FOR DEVELOPER #################################
+
+RewriteRule ^upload-photo$ core/upload-photo.php [L]
+
+### Recipe ###
+RewriteRule ^recipe$ controllers/developer/recipe/recipe.php [L]
+RewriteRule ^recipe/([0-9]+)$ controllers/developer/recipe/recipe.php?recipeid=$1 [L]
+RewriteRule ^recipe/active/([0-9]+)$ controllers/developer/recipe/active.php?recipeid=$1 [L]
+RewriteRule ^recipe/search$ controllers/developer/recipe/search.php [L]
+RewriteRule ^recipe/page/([0-9]+)$ controllers/developer/recipe/page.php?start=$1 [L]
+
+### Category ###
+RewriteRule ^category$ controllers/developer/category/category.php [L]
+RewriteRule ^category/([0-9]+)$ controllers/developer/category/category.php?categoryid=$1 [L]
+RewriteRule ^category/active/([0-9]+)$ controllers/developer/category/active.php?categoryid=$1 [L]
+RewriteRule ^category/search$ controllers/developer/category/search.php [L]
+RewriteRule ^category/page/([0-9]+)$ controllers/developer/category/page.php?start=$1 [L]
+
+### Clothes ###
+RewriteRule ^clothes$ controllers/developer/clothes/clothes.php [L]
+RewriteRule ^clothes/([0-9]+)$ controllers/developer/clothes/clothes.php?clothesid=$1 [L]
+RewriteRule ^clothes/active/([0-9]+)$ controllers/developer/clothes/active.php?clothesid=$1 [L]
+RewriteRule ^clothes/search$ controllers/developer/clothes/search.php [L]
+RewriteRule ^clothes/page/([0-9]+)$ controllers/developer/clothes/page.php?start=$1 [L]

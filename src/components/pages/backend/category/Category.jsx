@@ -14,8 +14,10 @@ import ModalAddCategory from "./ModalAddCategory";
 
 const Category = () => {
   const { dispatch, store } = React.useContext(StoreContext);
+  const [itemEdit, setItemEdit] = React.useState(null);
   const handleAdd = () => {
     dispatch(setIsAdd(true));
+    setItemEdit(null);
   };
   return (
     <>
@@ -31,7 +33,7 @@ const Category = () => {
                   <Plus size={16} /> Add New
                 </button>
               </div>
-              <CategoryTable />
+              <CategoryTable setItemEdit={setItemEdit} />
             </div>
 
             <Footer />
@@ -41,7 +43,7 @@ const Category = () => {
       {store.validate && <ModalValidation />}
       {store.error && <ModalError />}
       {store.success && <ToastSuccess />}
-      {store.isAdd && <ModalAddCategory />}
+      {store.isAdd && <ModalAddCategory itemEdit={itemEdit} />}
     </>
   );
 };

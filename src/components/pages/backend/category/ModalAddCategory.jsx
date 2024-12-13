@@ -2,26 +2,58 @@ import React from "react";
 import ModalWrapper from "../partials/Modals/ModalWrapper";
 import { ImagePlusIcon, X } from "lucide-react";
 import SpinnerButton from "../partials/spinners/SpinnerButton";
-import { setIsAdd } from "@/components/store/storeAction";
+import { setError, setIsAdd, setMessage, setSuccess } from "@/components/store/storeAction";
 import { StoreContext } from "@/components/store/storeContext";
 import { Form, Formik } from "formik";
 import * as Yup from "Yup";
 import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
 import { InputPhotoUpload, InputText } from "../helpers/FormInputs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryData } from "@/components/helpers/queryData";
 
-const ModalAddCategory = () => {
+const ModalAddCategory = ({ itemEdit }) => {
   const { dispatch, store } = React.useContext(StoreContext);
+  const [value, setValue] = React.useState("");
 
   const handleClose = () => {
     dispatch(setIsAdd(false));
   };
 
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      queryData(
+        itemEdit ? `/v2/category/${itemEdit.category_aid}` : "/v2/category",
+        itemEdit ? "PUT" : "POST",
+        values
+      ),
+    onSuccess: (data) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["category"] });
+
+      // show error box
+      if (!data.success) {
+        dispatch(setError(true));
+        dispatch(setMessage(data.error));
+        dispatch(setSuccess(false));
+      } else {
+        console.log("Success");
+        dispatch(setIsAdd(false));
+        dispatch(setSuccess(true));
+      }
+    },
+  });
+
   const initVal = {
-    Category_title: "",
+    category_title: itemEdit ? itemEdit.category_title : "",
   };
 
   const yupSchema = Yup.object({
-    Category_title: Yup.string().required("* Required"),
+    category_title: Yup.string().required("* Required"),
   });
   return (
     <>
@@ -37,7 +69,7 @@ const ModalAddCategory = () => {
             initialValues={initVal}
             validationSchema={yupSchema}
             onSubmit={async (values) => {
-              console.log(values);
+              mutation.mutate(values);
             }}
           >
             {(props) => {
@@ -49,7 +81,8 @@ const ModalAddCategory = () => {
                         <InputText
                           label="Title"
                           type="text"
-                          name="Category_title"
+                          name="category_title"
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
