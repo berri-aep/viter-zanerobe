@@ -1,15 +1,15 @@
 <?php
 $conn = null;
 $conn = checkDbConnection();
-$level = new Level($conn);
+$clothes = new clothes($conn);
 // $error = [];
 // $returnData = [];
-if (array_key_exists("levelid", $_GET)) {
-    $level->level_aid = $_GET['levelid'];
-    checkId($level->level_aid);
-    // isAssociated($level);
-    $query = checkDelete($level);
-    returnSuccess($level, "level", $query);
+if (array_key_exists("clothesid", $_GET)) {
+    $clothes->clothes_aid = $_GET['clothesid'];
+    checkId($clothes->clothes_aid);
+    // isAssociated($clothes);
+    $query = checkDelete($clothes);
+    returnSuccess($clothes, "clothes", $query);
 }
 
 checkEndpoint();

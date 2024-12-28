@@ -43,6 +43,7 @@ class Clothes
             $sql .= "( clothes_title, ";
             $sql .= "clothes_is_active, ";
             $sql .= "clothes_category_id, ";
+            $sql .= "clothes_slug, ";
             $sql .= "clothes_price, ";
             $sql .= "clothes_size, ";
             $sql .= "clothes_image1, ";
@@ -52,6 +53,7 @@ class Clothes
             $sql .= ":clothes_title, ";
             $sql .= ":clothes_is_active, ";
             $sql .= ":clothes_category_id, ";
+            $sql .= ":clothes_slug, ";
             $sql .= ":clothes_price, ";
             $sql .= ":clothes_size, ";
             $sql .= ":clothes_image1, ";
@@ -63,6 +65,7 @@ class Clothes
                 "clothes_title" => $this->clothes_title,
                 "clothes_is_active" => $this->clothes_is_active,
                 "clothes_category_id" => $this->clothes_category_id,
+                "clothes_slug" => $this->clothes_slug,
                 "clothes_price" => $this->clothes_price,
                 "clothes_size" => $this->clothes_size,
                 "clothes_image1" => $this->clothes_image1,
@@ -161,6 +164,7 @@ class Clothes
             $sql = "update {$this->tblclothes} set ";
             $sql .= "clothes_title = :clothes_title, ";
             $sql .= "clothes_category_id = :clothes_category_id, ";
+            $sql .= "clothes_slug = :clothes_slug, ";
             $sql .= "clothes_price = :clothes_price, ";
             $sql .= "clothes_size = :clothes_size, ";
             $sql .= "clothes_image1 = :clothes_image1, ";
@@ -171,6 +175,7 @@ class Clothes
             $query->execute([
                 "clothes_title" => $this->clothes_title,
                 "clothes_category_id" => $this->clothes_category_id,
+                "clothes_title" => $this->clothes_title,
                 "clothes_price" => $this->clothes_price,
                 "clothes_size" => $this->clothes_size,
                 "clothes_image1" => $this->clothes_image1,

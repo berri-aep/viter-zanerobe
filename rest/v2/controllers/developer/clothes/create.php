@@ -11,6 +11,7 @@ checkPayload($data);
 
 $clothes->clothes_title = checkIndex($data, "clothes_title");
 $clothes->clothes_category_id = checkIndex($data, "clothes_category_id");
+// $clothes->clothes_slug = checkIndex($data, "clothes_slug");
 $clothes->clothes_price = checkIndex($data, "clothes_price");
 $clothes->clothes_size = checkIndex($data, "clothes_size");
 $clothes->clothes_image1 = checkIndex($data, "clothes_image1");

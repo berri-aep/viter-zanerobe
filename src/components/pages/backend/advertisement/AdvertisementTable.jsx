@@ -9,31 +9,54 @@ import {
 import React from "react";
 import LoadMore from "../partials/LoadMore";
 import ModalConfirm from "../partials/Modals/ModalConfirm";
-import ModalDelete from "../partials/Modals/ModalDelete";
 import Pills from "../partials/Pills";
 import { StoreContext } from "@/components/store/storeContext";
+import SpinnerTable from "../partials/spinners/SpinnerTable";
+import TableLoader from "../partials/TableLoader";
+import IconNoData from "../partials/IconNoData";
+import IconServerError from "../partials/IconServerError";
+import useQueryData from "@/components/custom-hook/useQueryData";
+import ModalArchive from "@/components/partials/modal/ModalArchive";
+import ModalRestore from "@/components/partials/modal/ModalRestore";
+import ModalDelete from "@/components/partials/modal/ModalDelete";
 
-const AdvertisementTable = () => {
+const AdvertisementTable = ({setItemEdit}) => {
   const{store,dispatch} = React.useContext(StoreContext);
+   const [id, setId] = React.useState(null);
   let counter = 1;
+
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: result,
+  } = useQueryData(
+    `/v2/adv`, // endpoint
+    "get", // method
+    "adv"
+  );
   
 
-  const handleDelete = () => {
+  const handleDelete = (item) => {
     dispatch(setIsDelete(true));
+    setId(item.adv_aid);
   };
-  const handleEdit = () => {
+  const handleEdit = (item) => {
     dispatch(setIsAdd(true));
+    setItemEdit(item);
   };
-  const handleRestore = () => {
+  const handleRestore = (item) => {
     dispatch(setIsRestore(true));
+    setId(item.adv_aid);
   };
-  const handleArchive = () => {
+  const handleArchive = (item) => {
     dispatch(setIsArchive(true));
+    setId(item.adv_aid);
   };
   return (
     <>
       <div className="p-4 bg-secondary rounded-md mt-10 border border-line relative">
-        {/* <SpinnerTable /> */}
+      {!isLoading || (isFetching && <SpinnerTable />)}
         <div className="table-wrapper custom-scroll">
           {/* <TableLoader count={20} cols={5} /> */}
           <table>
@@ -46,34 +69,43 @@ const AdvertisementTable = () => {
               </tr>
             </thead>
             <tbody>
-              {/* <tr>
-              <td colSpan={100}>
-                <IconNoData />
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={100}>
-                <IconServerError />
-              </td>
-            </tr> */}
+            {((isLoading && !isFetching) || result?.data.length === 0) && (
+                <tr>
+                  <td colSpan="100%">
+                    {isLoading ? (
+                      <TableLoader count={30} cols={6} />
+                    ) : (
+                      <IconNoData />
+                    )}
+                  </td>
+                </tr>
+              )}
 
-              {Array.from(Array(6).keys()).map((i)=>(
+              {error && (
+                <tr>
+                  <td colSpan="100%">
+                    <IconServerError />
+                  </td>
+                </tr>
+              )}
 
-              <tr key={i}>
+              {result?.data.map((item, key) => {
+                return (
+              <tr key={key}>
                 <td>{counter++}.</td>
                 <td>
-                  <Pills />
+                <Pills isActive={item.adv_is_active} />
                 </td>
-                <td>Advertisement1</td>
+                <td>{item.adv_title}</td>
                 <td>
                   <ul className="table-action">
-                    {true ? (
+                    {item.adv_is_active ? (
                       <>
                         <li>
                           <button
                             className="tooltip"
                             data-tooltip="Edit"
-                            onClick={() => handleEdit()}
+                            onClick={() => handleEdit(item)}
                           >
                             <FilePenLine />
                           </button>
@@ -82,7 +114,7 @@ const AdvertisementTable = () => {
                           <button
                             className="tooltip"
                             data-tooltip="Archive"
-                            onClick={handleArchive}
+                            onClick={()=>handleArchive(item)}
                           >
                             <Archive />
                           </button>
@@ -92,14 +124,14 @@ const AdvertisementTable = () => {
                       <>
                         <li>
                           <button className="tooltip" data-tooltip="Restore">
-                            <ArchiveRestore onClick={() => handleRestore()} />
+                            <ArchiveRestore onClick={() => handleRestore(item)} />
                           </button>
                         </li>
                         <li>
                           <button
                             className="tooltip"
                             data-tooltip="Delete"
-                            onClick={handleDelete}
+                            onClick={()=>handleDelete(item)}
                           >
                             <Trash2 />
                           </button>
@@ -109,7 +141,8 @@ const AdvertisementTable = () => {
                   </ul>
                 </td>
               </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
 
@@ -117,9 +150,27 @@ const AdvertisementTable = () => {
         </div>
       </div>
 
-      {store.isDelete && <ModalDelete />}
-      {store.isRestore && <ModalConfirm />}
-      {store.isArchive && <ModalConfirm />}
+      {store.isDelete && (
+        <ModalDelete
+          setIsDelete={setIsDelete}
+          queryKey="adv"
+          mysqlApiDelete={`/v2/adv/${id}`}
+        />
+      )}
+      {store.isRestore && (
+        <ModalRestore
+          setIsRestore={setIsRestore}
+          queryKey="adv"
+          mysqlEndpoint={`/v2/adv/active/${id}`}
+        />
+      )}
+      {store.isArchive && (
+        <ModalArchive
+          setIsArchive={setIsArchive}
+          queryKey="adv"
+          mysqlEndpoint={`/v2/adv/active/${id}`}
+        />
+      )}
     </>
   );
 };

@@ -2,27 +2,62 @@ import React from "react";
 import ModalWrapper from "../partials/Modals/ModalWrapper";
 import { ImagePlusIcon, X } from "lucide-react";
 import SpinnerButton from "../partials/spinners/SpinnerButton";
-import { setIsAdd } from "@/components/store/storeAction";
+import { setError, setIsAdd, setMessage, setSuccess } from "@/components/store/storeAction";
 import { StoreContext } from "@/components/store/storeContext";
 import { Form, Formik } from "formik";
 import * as Yup from "Yup";
 import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
 import { InputPhotoUpload, InputText } from "../helpers/FormInputs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryData } from "@/components/helpers/queryData";
+import { imgPath } from "../helpers/function-general";
 
-const ModalAddAdvertisement = () => {
+const ModalAddAdvertisement = ({ itemEdit }) => {
   const { dispatch, store } = React.useContext(StoreContext);
-  const { uploadPhoto, handleChangePhoto, photo } = useUploadPhoto("");
+  const { uploadPhoto, handleChangePhoto, photo } = useUploadPhoto("/v2/upload-photo");
+
+  
+    const [value, setValue] = React.useState("");
 
   const handleClose = () => {
     dispatch(setIsAdd(false));
   };
 
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      queryData(
+        itemEdit ? `/v2/adv/${itemEdit.adv_aid}` : "/v2/adv",
+        itemEdit ? "PUT" : "POST",
+        values
+      ),
+    onSuccess: (data) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["adv"] });
+
+      // show error box
+      if (!data.success) {
+        dispatch(setError(true));
+        dispatch(setMessage(data.error));
+        dispatch(setSuccess(false));
+      } else {
+        console.log("Success");
+        dispatch(setIsAdd(false));
+        dispatch(setSuccess(true));
+      }
+    },
+  });
+
   const initVal = {
-    advertisement_title: "",
+    adv_title: itemEdit ? itemEdit.adv_title : "",
   };
 
   const yupSchema = Yup.object({
-    advertisement_title: Yup.string().required("* Required"),
+    adv_title: Yup.string().required("* Required"),
   });
   return (
     <>
@@ -38,7 +73,18 @@ const ModalAddAdvertisement = () => {
             initialValues={initVal}
             validationSchema={yupSchema}
             onSubmit={async (values) => {
-              console.log(values);
+              mutation.mutate({
+                ...values,
+                adv_image:
+                  (itemEdit?.adv_image === "" && photo) ||
+                  (!photo && "") ||
+                  (photo === undefined && "") ||
+                  (photo && itemEdit?.adv_image !== photo?.name)
+                    ? photo?.name || ""
+                    : itemEdit?.adv_image || "",
+
+              });
+              uploadPhoto();
             }}
           >
             {(props) => {
@@ -50,12 +96,12 @@ const ModalAddAdvertisement = () => {
                         <InputText
                           label="Title"
                           type="text"
-                          name="advertisement_title"
+                          name="adv_title"
                         />
                         </div>
                         <div className="input-wrap relative  group input-photo-wrap h-[150px] ">
                             <label htmlFor="">Photo</label>
-                          {photo === null ? (
+                            {itemEdit === null && photo === null ?  (
                             <div className="w-full border border-line rounded-md flex justify-center items-center flex-col h-full">
                               <ImagePlusIcon
                                 size={50}
@@ -69,11 +115,11 @@ const ModalAddAdvertisement = () => {
                           ) : (
                             <img
                               src={
-                                true
+                                photo
                                   ? URL.createObjectURL(photo) // preview
-                                  : imgPath + "/" + itemEdit?.movies_image // check db
+                                  : imgPath + "/" + itemEdit?.adv_image // check db
                               }
-                              alt="employee photo"
+                              alt="photo"
                               className={`group-hover:opacity-30 duration-200 relative object-cover h-full w-full  m-auto `}
                             />
                           )}

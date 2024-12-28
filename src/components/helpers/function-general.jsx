@@ -1,5 +1,5 @@
-export const imgPath = "http://localhost/vite-zanerobe/public/img";
-export const projectURL = "http://localhost/vite-zanerobe/";
+export const imgPath = "http://localhost/viter-zanerobe/public/img";
+export const projectURL = "http://localhost/viter-zanerobe/";
 
 export const devApiUrl = `${projectURL}/rest`;
 export const devBaseUrl = `${projectURL}`;

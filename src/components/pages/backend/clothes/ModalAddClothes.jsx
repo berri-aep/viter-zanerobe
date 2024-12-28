@@ -147,7 +147,7 @@ const ModalAddClothes = ({ itemEdit }) => {
                                 ? URL.createObjectURL(photo1) // preview
                                 : imgPath + "/" + itemEdit?.clothes_image1 // check db
                             }
-                            alt="employee photo"
+                            alt="photo"
                             className={`group-hover:opacity-30 duration-200 relative object-cover h-full w-full  m-auto `}
                           />
                         )}
@@ -184,7 +184,7 @@ const ModalAddClothes = ({ itemEdit }) => {
                                 ? URL.createObjectURL(photo2) // preview
                                 : imgPath + "/" + itemEdit?.clothes_image2 // check db
                             }
-                            alt="employee photo"
+                            alt="photo"
                             className={`group-hover:opacity-30 duration-200 relative object-cover h-full w-full  m-auto `}
                           />
                         )}

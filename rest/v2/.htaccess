@@ -31,3 +31,10 @@ RewriteRule ^clothes/([0-9]+)$ controllers/developer/clothes/clothes.php?clothes
 RewriteRule ^clothes/active/([0-9]+)$ controllers/developer/clothes/active.php?clothesid=$1 [L]
 RewriteRule ^clothes/search$ controllers/developer/clothes/search.php [L]
 RewriteRule ^clothes/page/([0-9]+)$ controllers/developer/clothes/page.php?start=$1 [L]
+
+### Adv ###
+RewriteRule ^adv$ controllers/developer/adv/adv.php [L]
+RewriteRule ^adv/([0-9]+)$ controllers/developer/adv/adv.php?advid=$1 [L]
+RewriteRule ^adv/active/([0-9]+)$ controllers/developer/adv/active.php?advid=$1 [L]
+RewriteRule ^adv/search$ controllers/developer/adv/search.php [L]
+RewriteRule ^adv/page/([0-9]+)$ controllers/developer/adv/page.php?start=$1 [L]
