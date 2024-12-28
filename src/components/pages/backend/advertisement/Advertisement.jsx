@@ -31,7 +31,7 @@ const { dispatch, store } = React.useContext(StoreContext);
             />
             <div className="p-5">
               <div className="flex justify-between items-center">
-                <SearchBar />
+                <div></div>
                 <button className="btn btn-add" onClick={handleAdd}>
                   <Plus size={16} /> Add New
                 </button>

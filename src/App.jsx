@@ -10,6 +10,7 @@ import SetPassword from "./components/pages/backend/access/SetPassword";
 import ForgotPassword from "./components/pages/backend/access/ForgotPassword";
 import ProductInfo from "./components/pages/frontend/product-info/ProductInfo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Dashboard from "./components/pages/backend/dashboard/Dashboard";
 
 
 
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/product/:slug" element={<ProductInfo/>} />
           <Route path="/admin/clothes" element={<Clothes />} />
           <Route path="/admin/category" element={<Category />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/advertisement" element={<Advertisement />} />
 
           <Route path="/admin/login" element={<Login />} />

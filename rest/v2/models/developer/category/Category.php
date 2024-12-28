@@ -84,23 +84,6 @@ class Category
     }
 
 
-    // public function search()
-    // {
-    //     try {
-    //         $sql = "select * from {$this->tblrecipe} ";
-    //         $sql .= "where recipe_title like :recipe_title ";
-    //         $sql .= "order by recipe_is_active desc ";
-    //         $query = $this->connection->prepare($sql);
-    //         $query->execute([
-    //             "recipe_title" => "%{$this->recipe_search}%",
-    //         ]);
-    //     } catch (PDOException $ex) {
-    //         $query = false;
-    //     }
-    //     return $query;
-    // }
-
-
     // read by id
     public function readById()
     {
@@ -206,42 +189,60 @@ class Category
     //     return $query;
     // }
 
+    public function search()
+    {
+        try {
 
-    // public function filterByStatus()
-    // {
-    //     try {
-    //         $sql = "select * ";
-    //         $sql .= "from {$this->tblrecipe} ";
-    //         $sql .= "where recipe_is_active = :recipe_is_active  ";
-    //         $sql .= "order by recipe_is_active desc ";
-    //         $query = $this->connection->prepare($sql);
-    //         $query->execute([
-    //             "recipe_is_active" => $this->recipe_is_active,
-    //         ]);
-    //     } catch (PDOException $ex) {
-    //         $query = false;
-    //     }
-    //     return $query;
-    // }
+            $sql = "select * from {$this->tblcategory} ";
+            $sql .= "where category_title like :category_title ";
+            $sql .= "order by category_is_active desc, ";
+            $sql .= "category_title ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "category_title" => "%{$this->category_search}%",
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
 
-    // public function filterByStatusAndSearch()
-    // {
-    //     try {
-    //         $sql = "select * ";
-    //         $sql .= "from {$this->tblrecipe} ";
-    //         $sql .= "where ";
-    //         $sql .= "recipe_is_active = :recipe_is_active ";
-    //         $sql .= "and recipe_title like :recipe_title ";
-    //         $sql .= "order by recipe_is_active desc, ";
-    //         $sql .= "recipe_title asc ";
-    //         $query = $this->connection->prepare($sql);
-    //         $query->execute([
-    //             "recipe_title" => "%{$this->recipe_search}%",
-    //             "recipe_is_active" => $this->recipe_is_active,
-    //         ]);
-    //     } catch (PDOException $ex) {
-    //         $query = false;
-    //     }
-    //     return $query;
-    // }
+    public function filterActive()
+    {
+        try {
+
+            $sql = "select * from {$this->tblcategory} ";
+            $sql .= "where category_is_active = :category_is_active ";
+            $sql .= "order by category_is_active desc, ";
+            $sql .= "category_title ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "category_is_active" => $this->category_is_active,
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function filterActiveSearch()
+    {
+        try {
+
+            $sql = "select * from {$this->tblcategory} ";
+            $sql .= "where category_is_active = :category_is_active ";
+            $sql .= "order by category_is_active desc, ";
+            $sql .= "category_title ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "category_is_active" => $this->category_is_active,
+                "category_title" => "%{$this->category_search}%",
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
+
 }

@@ -88,23 +88,6 @@ class Adv
     }
 
 
-    public function search()
-    {
-        try {
-            $sql = "select * from {$this->tbladv} ";
-            $sql .= "where adv_title like :adv_title ";
-            $sql .= "order by adv_is_active desc ";
-            $query = $this->connection->prepare($sql);
-            $query->execute([
-                "adv_title" => "%{$this->adv_search}%",
-            ]);
-        } catch (PDOException $ex) {
-            $query = false;
-        }
-        return $query;
-    }
-
-
     // read by id
     public function readById()
     {
@@ -211,37 +194,34 @@ class Adv
     //     return $query;
     // }
 
-
-    public function filterByStatus()
+    public function search()
     {
         try {
-            $sql = "select * ";
-            $sql .= "from {$this->tbladv} ";
-            $sql .= "where adv_is_active = :adv_is_active  ";
-            $sql .= "order by adv_is_active desc ";
-            $query = $this->connection->prepare($sql);
-            $query->execute([
-                "adv_is_active" => $this->adv_is_active,
-            ]);
-        } catch (PDOException $ex) {
-            $query = false;
-        }
-        return $query;
-    }
 
-    public function filterByStatusAndSearch()
-    {
-        try {
-            $sql = "select * ";
-            $sql .= "from {$this->tbladv} ";
-            $sql .= "where ";
-            $sql .= "adv_is_active = :adv_is_active ";
-            $sql .= "and adv_title like :adv_title ";
+            $sql = "select * from {$this->tbladv} ";
+            $sql .= "where adv_title like :adv_title ";
             $sql .= "order by adv_is_active desc, ";
-            $sql .= "adv_title asc ";
+            $sql .= "adv_title ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "adv_title" => "%{$this->adv_search}%",
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function filterActive()
+    {
+        try {
+
+            $sql = "select * from {$this->tbladv} ";
+            $sql .= "where adv_is_active = :adv_is_active ";
+            $sql .= "order by adv_is_active desc, ";
+            $sql .= "adv_title ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
                 "adv_is_active" => $this->adv_is_active,
             ]);
         } catch (PDOException $ex) {
@@ -249,4 +229,25 @@ class Adv
         }
         return $query;
     }
+
+    public function filterActiveSearch()
+    {
+        try {
+
+            $sql = "select * from {$this->tbladv} ";
+            $sql .= "where adv_is_active = :adv_is_active ";
+            $sql .= "order by adv_is_active desc, ";
+            $sql .= "adv_title ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "adv_is_active" => $this->adv_is_active,
+                "adv_title" => "%{$this->adv_search}%",
+            ]);
+        } catch (PDOException $ex) {
+            $query = false;
+        }
+        return $query;
+    }
+
+
 }

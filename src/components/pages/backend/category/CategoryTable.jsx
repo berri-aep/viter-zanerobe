@@ -19,23 +19,21 @@ import IconServerError from "../partials/IconServerError";
 import ModalRestore from "@/components/partials/modal/ModalRestore";
 import ModalArchive from "@/components/partials/modal/ModalArchive";
 import ModalDelete from "@/components/partials/modal/ModalDelete";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { queryDataInfinite } from "@/components/helpers/queryDataInfinite";
+import { useInView } from "react-intersection-observer";
+import SearchBarWithFilterStatus from "@/components/partials/SearchBarWithFilterStatus";
 
 const CategoryTable = ({setItemEdit}) => {
   const { store, dispatch } = React.useContext(StoreContext);
   let counter = 1;
   const [id, setId] = React.useState(null);
-
-
-    const {
-      isLoading,
-      isFetching,
-      error,
-      data: result,
-    } = useQueryData(
-      `/v2/category`, // endpoint
-      "get", // method
-      "category"
-    );
+  const [isFilter, setIsFilter] = React.useState(false);
+  const [onSearch, setOnSearch] = React.useState(false);
+  const [statusFilter, setStatusFilter] = React.useState("");
+  const search = React.useRef({ value: "" });
+  const [page, setPage] = React.useState(1);
+  const { ref, inView } = useInView();
 
   const handleDelete = (item) => {
     dispatch(setIsDelete(true));
@@ -53,12 +51,62 @@ const CategoryTable = ({setItemEdit}) => {
     dispatch(setIsArchive(true));
     setId(item.category_aid);
   };
+
+  const {
+    data: result,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["category", onSearch, isFilter, statusFilter],
+    queryFn: async ({ pageParam = 1 }) =>
+      await queryDataInfinite(
+        "/v2/category/search", // search or filter endpoint
+        `/v2/category/page/${pageParam}`, //page api/endpoint
+        isFilter || store.isSearch, //search boolean
+        {
+          isFilter,
+          statusFilter,
+          searchValue: search?.current.value,
+          id: "",
+        } // payload
+      ),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.total) {
+        return lastPage.page + lastPage.count;
+        ``;
+      }
+      return;
+    },
+    refetchOnWindowFocus: false,
+  });
+  React.useEffect(() => {
+    if (inView) {
+      setPage((prev) => prev + 1);
+      fetchNextPage();
+    }
+  }, [inView]);
   return (
     <>
-      <div className="p-4 bg-secondary rounded-md mt-10 border border-line relative">
-        {!isLoading || (isFetching && <SpinnerTable />)}
+    <div>
+        <SearchBarWithFilterStatus
+          search={search}
+          dispatch={dispatch}
+          store={store}
+          result={result}
+          isFetching={isFetching}
+          setOnSearch={setOnSearch}
+          onSearch={onSearch}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          setIsFilter={setIsFilter}
+        />
+      </div>
+      <div className="p-4 bg-secondary rounded-md mt-10 border border-line relative">      
         <div className="table-wrapper custom-scroll">
-          {/* <TableLoader count={20} cols={5} /> */}
           <table>
             <thead>
               <tr>
@@ -69,27 +117,29 @@ const CategoryTable = ({setItemEdit}) => {
               </tr>
             </thead>
             <tbody>
-              {((isLoading && !isFetching) || result?.data.length === 0) && (
+            {(status === "pending" || result?.pages[0].data.length === 0) && (
                 <tr>
-                  <td colSpan="100%">
-                    {isLoading ? (
-                      <TableLoader count={30} cols={6} />
+                  <td colSpan={100} className="p-10">
+                    {status === "pending" ? (
+                      <TableLoader cols={5} count={20} />
                     ) : (
                       <IconNoData />
                     )}
                   </td>
                 </tr>
               )}
-
               {error && (
                 <tr>
-                  <td colSpan="100%">
+                  <td colSpan={100}>
                     <IconServerError />
                   </td>
                 </tr>
               )}
-              {result?.data.map((item, key) => {
-                return (
+
+              {result?.pages.map((page, pageKey) => (
+                  <React.Fragment key={pageKey}>
+                       {page.data.map((item, key) => {
+                           return (
                   <tr key={key}>
                     <td>{counter++}.</td>
                     <td>
@@ -98,7 +148,7 @@ const CategoryTable = ({setItemEdit}) => {
                     <td>{item.category_title}</td>
                     <td>
                       <ul className="table-action">
-                        {item.category_is_active ? (
+                        {item.category_is_active === 1 ?(
                           <>
                             <li>
                               <button
@@ -145,12 +195,24 @@ const CategoryTable = ({setItemEdit}) => {
                       </ul>
                     </td>
                   </tr>
-                );
-              })}
+                    );
+                  })}
+               </React.Fragment>
+             ))}
             </tbody>
           </table>
 
-          <LoadMore />
+          <div className="pb-10 flex items-center justify-center text-white">
+            <LoadMore
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              hasNextPage={hasNextPage}
+              result={result?.pages[0]}
+              setPage={setPage}
+              page={page}
+              refView={ref}
+            />
+          </div>
         </div>
       </div>
 

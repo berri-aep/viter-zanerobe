@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2024 at 08:51 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Generation Time: Dec 28, 2024 at 01:11 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `zanerobe_v1`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `adv`
+--
+
+CREATE TABLE `adv` (
+  `adv_aid` int(11) NOT NULL,
+  `adv_is_active` tinyint(1) NOT NULL,
+  `adv_title` varchar(30) NOT NULL,
+  `adv_image` varchar(30) NOT NULL,
+  `adv_datetime` int(11) NOT NULL,
+  `adv_created` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `adv`
+--
+
+INSERT INTO `adv` (`adv_aid`, `adv_is_active`, `adv_title`, `adv_image`, `adv_datetime`, `adv_created`) VALUES
+(1, 1, 'test1', 'asfasfsd', 0, 0),
+(2, 1, 'test2', 'slide-1.jpg', 2024, 2024);
 
 -- --------------------------------------------------------
 
@@ -56,7 +79,8 @@ CREATE TABLE `clothes` (
   `clothes_is_active` tinyint(1) NOT NULL,
   `clothes_title` varchar(30) NOT NULL,
   `clothes_category_id` int(11) NOT NULL,
-  `clothes_price` int(11) NOT NULL,
+  `clothes_slug` varchar(30) NOT NULL,
+  `clothes_price` varchar(30) NOT NULL,
   `clothes_size` varchar(20) NOT NULL,
   `clothes_image1` varchar(30) NOT NULL,
   `clothes_image2` varchar(30) NOT NULL,
@@ -68,13 +92,21 @@ CREATE TABLE `clothes` (
 -- Dumping data for table `clothes`
 --
 
-INSERT INTO `clothes` (`clothes_aid`, `clothes_is_active`, `clothes_title`, `clothes_category_id`, `clothes_price`, `clothes_size`, `clothes_image1`, `clothes_image2`, `clothes_datetime`, `clothes_created`) VALUES
-(1, 1, 'hehe', 4, 234, '32', 'awsf', 'dafsd', 2024, 0),
-(2, 1, 'test4', 1, 34, '32', 'winter-1.jpg', 'winter-2-1.jpg', 2024, 2024);
+INSERT INTO `clothes` (`clothes_aid`, `clothes_is_active`, `clothes_title`, `clothes_category_id`, `clothes_slug`, `clothes_price`, `clothes_size`, `clothes_image1`, `clothes_image2`, `clothes_datetime`, `clothes_created`) VALUES
+(3, 1, 'Box Zip Hood Black', 5, 'Box-Zip-Hood-Black', '7,700', 'XS, S, M, L, XL, XXL', 'jacket-1.jpg', 'jacket-2.jpg', 2024, 2024),
+(4, 1, 'Zip Funnel Sweat Grey Marle', 5, '', '7,200', 'XS, S, M, L, XL, XXL', 'jacket-3.jpg', 'jacket-4.jpg', 2024, 2024),
+(5, 1, 'Creators Club Box Hood Forest', 5, '', '7,700', 'XS, S, M, L, XL, XXL', 'jacket-5.jpg', 'jacket-6.jpg', 2024, 2024),
+(6, 1, 'Stitched Overshirt Black', 5, '', '7,700', 'XS, S, M, L, XL, XXL', 'jacket-7.jpg', 'jacket-8.jpg', 2024, 2024);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `adv`
+--
+ALTER TABLE `adv`
+  ADD PRIMARY KEY (`adv_aid`);
 
 --
 -- Indexes for table `category`
@@ -93,6 +125,12 @@ ALTER TABLE `clothes`
 --
 
 --
+-- AUTO_INCREMENT for table `adv`
+--
+ALTER TABLE `adv`
+  MODIFY `adv_aid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
@@ -102,7 +140,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `clothes`
 --
 ALTER TABLE `clothes`
-  MODIFY `clothes_aid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `clothes_aid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
